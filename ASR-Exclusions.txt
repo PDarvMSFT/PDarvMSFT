@@ -1,19 +1,19 @@
-let lsass=DeviceEvents
-| where Timestamp > ago (30d)
+let LsassEvents=DeviceEvents
+| where TimeGenerated > ago (30d)
 | where ActionType == "AsrLsassCredentialTheftAudited"
-| mv-expand  todynamic(AdditionalFields)
+| mv-expand todynamic(AdditionalFields)
 | extend isAudit = tostring(AdditionalFields.IsAudit)
 | where isAudit = true
-| summarize LsassAudit=make_set(InitiatingProcessCommandLine) by DeviceName
-| extend ['Count of Processes']=array_length(LsassAudit)
+| summarize LSASSInitProc=make_set(InitiatingProcessCommandLine), LSASSProc=make_set(ProcessCommandLine) by DeviceName
+| extend ['Count of unique LSASS ASR proc Audited']=array_length(LSASSInitProc)
 | sort by ['Count of Processes'] desc;
 let psexec=DeviceEvents
-| where Timestamp > ago (30d)
+| where TimeGenerated > ago (30d)
 | where ActionType == "AsrPsexecWmiChildProcessAudited"
 | mv-expand  todynamic(AdditionalFields)
 | extend isAudit = tostring(AdditionalFields.IsAudit)
 | where isAudit = true
-| summarize PsExecAudit=make_set(InitiatingProcessCommandLine) by DeviceName
-| extend ['Count of psexec Processes']=array_length(PsExecAudit)
+| summarize PsExecInitProc=make_set(InitiatingProcessCommandLine), PsExecProc=make_set(ProcessCommandLine) by DeviceName
+| extend ['Count of psexec Processes']=array_length(PsExecInitProc)
 | sort by ['Count of psexec Processes'] desc;
-union lsass,psexec
+union LsassEvents, psexec
