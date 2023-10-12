@@ -1,0 +1,435 @@
+{
+    "version": "Notebook/1.0",
+    "items": [
+      {
+        "type": 1,
+        "content": {
+          "json": "## IOC lookup. Only MDE tables for now"
+        },
+        "name": "text - 0"
+      },
+      {
+        "type": 11,
+        "content": {
+          "version": "LinkItem/1.0",
+          "style": "tabs",
+          "links": [
+            {
+              "id": "118f58d1-a741-4d61-88c4-6558296d7ef9",
+              "cellValue": "WorkbookPage",
+              "linkTarget": "parameter",
+              "linkLabel": "URL Lookup",
+              "subTarget": "pn_URLLookup",
+              "preText": "Recherche URL",
+              "style": "link"
+            },
+            {
+              "id": "fe627493-a6af-4bbf-8b10-5889e102ee6b",
+              "cellValue": "WorkbookPage",
+              "linkTarget": "parameter",
+              "linkLabel": "IP Lookup",
+              "subTarget": "pn_IPLookup",
+              "preText": "Recherche IP",
+              "style": "link"
+            },
+            {
+              "id": "afe46604-bcfb-4a8c-b64f-1657b691b390",
+              "cellValue": "WorkbookPage",
+              "linkTarget": "parameter",
+              "linkLabel": "Hash Lookup",
+              "subTarget": "pn_HashLookup",
+              "preText": "Recherche Hash",
+              "style": "link"
+            }
+          ]
+        },
+        "name": "links - 3"
+      },
+      {
+        "type": 12,
+        "content": {
+          "version": "NotebookGroup/1.0",
+          "groupType": "editable",
+          "items": [
+            {
+              "type": 9,
+              "content": {
+                "version": "KqlParameterItem/1.0",
+                "parameters": [
+                  {
+                    "id": "863aef05-4945-4ac7-9da3-6ea35ed3593f",
+                    "version": "KqlParameterItem/1.0",
+                    "name": "pn_TimeRange",
+                    "type": 4,
+                    "isRequired": true,
+                    "typeSettings": {
+                      "selectableValues": [
+                        {
+                          "durationMs": 300000
+                        },
+                        {
+                          "durationMs": 900000
+                        },
+                        {
+                          "durationMs": 1800000
+                        },
+                        {
+                          "durationMs": 3600000
+                        },
+                        {
+                          "durationMs": 14400000
+                        },
+                        {
+                          "durationMs": 43200000
+                        },
+                        {
+                          "durationMs": 86400000
+                        },
+                        {
+                          "durationMs": 172800000
+                        },
+                        {
+                          "durationMs": 259200000
+                        },
+                        {
+                          "durationMs": 604800000
+                        },
+                        {
+                          "durationMs": 1209600000
+                        },
+                        {
+                          "durationMs": 2419200000
+                        },
+                        {
+                          "durationMs": 2592000000
+                        },
+                        {
+                          "durationMs": 5184000000
+                        },
+                        {
+                          "durationMs": 7776000000
+                        }
+                      ],
+                      "allowCustom": true
+                    },
+                    "timeContext": {
+                      "durationMs": 86400000
+                    },
+                    "value": {
+                      "durationMs": 2592000000
+                    },
+                    "label": "Time Range"
+                  },
+                  {
+                    "id": "65eb6f04-d69e-4902-8f96-8c7e6b60f82b",
+                    "version": "KqlParameterItem/1.0",
+                    "name": "pn_Ioc",
+                    "label": "URL",
+                    "type": 9,
+                    "isRequired": true,
+                    "multiSelect": true,
+                    "quote": "'",
+                    "delimiter": ",",
+                    "timeContext": {
+                      "durationMs": 86400000
+                    }
+                  }
+                ],
+                "style": "above",
+                "queryType": 0,
+                "resourceType": "microsoft.operationalinsights/workspaces"
+              },
+              "conditionalVisibility": {
+                "parameterName": "WorkbookPage",
+                "comparison": "isEqualTo",
+                "value": "pn_URLLookup"
+              },
+              "name": "parameters - 1"
+            },
+            {
+              "type": 3,
+              "content": {
+                "version": "KqlItem/1.0",
+                "query": "let Iocs = dynamic([{pn_Ioc}]);\r\nlet Downloads=(DeviceNetworkEvents\r\n| where ActionType == @\"HttpConnectionInspected\"\r\n| extend host = tostring(AdditionalFields.host)\r\n| extend uri = tostring(AdditionalFields.uri)\r\n| extend direction = tostring(AdditionalFields.direction)\r\n| extend user_agent = tostring(AdditionalFields.user_agent)\r\n| project TimeGenerated, DeviceName, FullUrl=strcat(host,uri), ActionType, direction,user_agent);\r\nlet remoteu= (DeviceNetworkEvents\r\n| where isnotempty( RemoteUrl)\r\n| project TimeGenerated,DeviceName,FullUrl=RemoteUrl, ActionType);\r\nunion Downloads,remoteu\r\n| where FullUrl has_any (Iocs)\r\n| sort by TimeGenerated desc",
+                "size": 0,
+                "showAnalytics": true,
+                "title": "Events matching specified URL(s)",
+                "timeContextFromParameter": "pn_TimeRange",
+                "showRefreshButton": true,
+                "queryType": 0,
+                "resourceType": "microsoft.operationalinsights/workspaces",
+                "gridSettings": {
+                  "rowLimit": 10000,
+                  "filter": true
+                }
+              },
+              "conditionalVisibility": {
+                "parameterName": "WorkbookPage",
+                "comparison": "isEqualTo",
+                "value": "pn_URLLookup"
+              },
+              "name": "query - 2"
+            }
+          ]
+        },
+        "name": "group - 4"
+      },
+      {
+        "type": 9,
+        "content": {
+          "version": "KqlParameterItem/1.0",
+          "parameters": [
+            {
+              "id": "ea6aa8d3-cd6c-443b-ae8d-b7e59aed601c",
+              "version": "KqlParameterItem/1.0",
+              "name": "pn_TimeRangeHash",
+              "label": "TimeRange",
+              "type": 4,
+              "isRequired": true,
+              "typeSettings": {
+                "selectableValues": [
+                  {
+                    "durationMs": 300000
+                  },
+                  {
+                    "durationMs": 900000
+                  },
+                  {
+                    "durationMs": 1800000
+                  },
+                  {
+                    "durationMs": 3600000
+                  },
+                  {
+                    "durationMs": 14400000
+                  },
+                  {
+                    "durationMs": 43200000
+                  },
+                  {
+                    "durationMs": 86400000
+                  },
+                  {
+                    "durationMs": 172800000
+                  },
+                  {
+                    "durationMs": 259200000
+                  },
+                  {
+                    "durationMs": 604800000
+                  },
+                  {
+                    "durationMs": 1209600000
+                  },
+                  {
+                    "durationMs": 2419200000
+                  },
+                  {
+                    "durationMs": 2592000000
+                  },
+                  {
+                    "durationMs": 5184000000
+                  },
+                  {
+                    "durationMs": 7776000000
+                  }
+                ],
+                "allowCustom": true
+              },
+              "timeContext": {
+                "durationMs": 86400000
+              },
+              "value": {
+                "durationMs": 604800000
+              }
+            },
+            {
+              "id": "531ac6e5-ff8b-4dee-aea3-b629820b9d55",
+              "version": "KqlParameterItem/1.0",
+              "name": "pn_hash",
+              "type": 9,
+              "isRequired": true,
+              "multiSelect": true,
+              "quote": "'",
+              "delimiter": ",",
+              "timeContext": {
+                "durationMs": 86400000
+              },
+              "label": "Hash"
+            }
+          ],
+          "style": "above",
+          "queryType": 0,
+          "resourceType": "microsoft.operationalinsights/workspaces"
+        },
+        "conditionalVisibility": {
+          "parameterName": "WorkbookPage",
+          "comparison": "isEqualTo",
+          "value": "pn_HashLookup"
+        },
+        "name": "parameters - 4"
+      },
+      {
+        "type": 3,
+        "content": {
+          "version": "KqlItem/1.0",
+          "query": "let ioc = dynamic([{pn_hash}]);\r\nDeviceFileEvents\r\n|where MD5 has_any (ioc) or SHA1 has_any (ioc) or SHA256 has_any (ioc)\r\n| extend localtime = datetime_utc_to_local(TimeGenerated, 'Canada/Eastern')\r\n| project localtime,TimeGenerated,FileOriginReferrerUrl,FileOriginUrl,FolderPath,User=strcat(InitiatingProcessAccountDomain,\"\\\\\",InitiatingProcessAccountName),InitiatingProcessCommandLine,InitiatingProcessFolderPath\r\n\r\n\r\n",
+          "size": 0,
+          "title": "Events matching specified hash(es)",
+          "timeContextFromParameter": "pn_TimeRangeHash",
+          "showRefreshButton": true,
+          "queryType": 0,
+          "resourceType": "microsoft.operationalinsights/workspaces",
+          "gridSettings": {
+            "rowLimit": 10000,
+            "filter": true
+          }
+        },
+        "conditionalVisibility": {
+          "parameterName": "WorkbookPage",
+          "comparison": "isEqualTo",
+          "value": "pn_HashLookup"
+        },
+        "name": "query - 3",
+        "styleSettings": {
+          "showBorder": true
+        }
+      },
+      {
+        "type": 12,
+        "content": {
+          "version": "NotebookGroup/1.0",
+          "groupType": "editable",
+          "items": [
+            {
+              "type": 9,
+              "content": {
+                "version": "KqlParameterItem/1.0",
+                "parameters": [
+                  {
+                    "id": "09c44426-5474-49d7-83dd-f6c1adf9f7f1",
+                    "version": "KqlParameterItem/1.0",
+                    "name": "pn_TimeRangeIP",
+                    "label": "Time Range",
+                    "type": 4,
+                    "isRequired": true,
+                    "typeSettings": {
+                      "selectableValues": [
+                        {
+                          "durationMs": 300000
+                        },
+                        {
+                          "durationMs": 900000
+                        },
+                        {
+                          "durationMs": 1800000
+                        },
+                        {
+                          "durationMs": 3600000
+                        },
+                        {
+                          "durationMs": 14400000
+                        },
+                        {
+                          "durationMs": 43200000
+                        },
+                        {
+                          "durationMs": 86400000
+                        },
+                        {
+                          "durationMs": 172800000
+                        },
+                        {
+                          "durationMs": 259200000
+                        },
+                        {
+                          "durationMs": 604800000
+                        },
+                        {
+                          "durationMs": 1209600000
+                        },
+                        {
+                          "durationMs": 2419200000
+                        },
+                        {
+                          "durationMs": 2592000000
+                        },
+                        {
+                          "durationMs": 5184000000
+                        },
+                        {
+                          "durationMs": 7776000000
+                        }
+                      ],
+                      "allowCustom": true
+                    },
+                    "timeContext": {
+                      "durationMs": 86400000
+                    },
+                    "value": {
+                      "durationMs": 172800000
+                    }
+                  },
+                  {
+                    "id": "76a1679e-a5dc-4372-a5d5-5d5f2af10d56",
+                    "version": "KqlParameterItem/1.0",
+                    "name": "pn_IP",
+                    "label": "IP",
+                    "type": 9,
+                    "isRequired": true,
+                    "multiSelect": true,
+                    "quote": "'",
+                    "delimiter": ",",
+                    "timeContext": {
+                      "durationMs": 86400000
+                    }
+                  }
+                ],
+                "style": "above",
+                "queryType": 0,
+                "resourceType": "microsoft.operationalinsights/workspaces"
+              },
+              "conditionalVisibility": {
+                "parameterName": "WorkbookPage",
+                "comparison": "isEqualTo",
+                "value": "pn_IPLookup"
+              },
+              "name": "parameters - 5"
+            },
+            {
+              "type": 3,
+              "content": {
+                "version": "KqlItem/1.0",
+                "query": "let ioc = dynamic([{pn_IP}]);\r\nDeviceNetworkEvents\r\n| where RemoteIP has_any (ioc)\r\n| extend localtime = datetime_utc_to_local(TimeGenerated, 'Canada/Eastern')\r\n| join DeviceNetworkInfo on DeviceName\r\n| extend NetworkName = tostring(ConnectedNetworks[0].Name)\r\n| extend IsConnectedToInternet = tostring(ConnectedNetworks[0].IsConnectedToInternet)\r\n| extend NetworkDescription = tostring(ConnectedNetworks[0].Description)\r\n| extend NetworkCategory = tostring(ConnectedNetworks[0].Category)\r\n| project TimeGenerated, localtime, DeviceName, User=strcat(InitiatingProcessAccountDomain,\"\\\\\",InitiatingProcessAccountName), LocalIP, LocalIPType, LocalPort, Protocol,RemoteIP, RemoteIPType, InitiatingProcessCommandLine, InitiatingProcessFolderPath, NetworkName, NetworkDescription, NetworkCategory, IsConnectedToInternet",
+                "size": 0,
+                "title": "Events matching specified IP(s)",
+                "timeContextFromParameter": "pn_TimeRangeIP",
+                "showRefreshButton": true,
+                "queryType": 0,
+                "resourceType": "microsoft.operationalinsights/workspaces",
+                "gridSettings": {
+                  "rowLimit": 10000,
+                  "filter": true
+                }
+              },
+              "conditionalVisibility": {
+                "parameterName": "WorkbookPage",
+                "comparison": "isEqualTo",
+                "value": "pn_IPLookup"
+              },
+              "name": "query - 6",
+              "styleSettings": {
+                "showBorder": true
+              }
+            }
+          ]
+        },
+        "name": "group_ip"
+      }
+    ],
+    "fallbackResourceIds": [
+      "/subscriptions/30b1d708-00cf-49ec-bf4f-fdb3aac12a04/resourcegroups/rg-sent-adv-hunting/providers/microsoft.operationalinsights/workspaces/sent-adv-hunting"
+    ],
+    "fromTemplateId": "https://sentinelus.hosting.portal.azure.net/sentinelus/Content/1.0.02472.3321-231008-211332/Scenarios/Ecosystem/Content/Workbooks/CustomWorkbook.json",
+    "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
+  }

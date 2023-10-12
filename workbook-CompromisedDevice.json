@@ -1,0 +1,875 @@
+{
+    "version": "Notebook/1.0",
+    "items": [
+      {
+        "type": 11,
+        "content": {
+          "version": "LinkItem/1.0",
+          "style": "tabs",
+          "links": [
+            {
+              "id": "6a2b0041-24d0-481d-8716-b5a53f77d166",
+              "cellValue": "WorkbookPage",
+              "linkTarget": "parameter",
+              "linkLabel": "Main Dashboard",
+              "subTarget": "MainDashboard",
+              "style": "link"
+            },
+            {
+              "id": "8269b1f5-1ed2-4262-ba04-59eabaffe745",
+              "cellValue": "WorkbookPage",
+              "linkTarget": "parameter",
+              "linkLabel": "Registry Dashboard",
+              "subTarget": "RegistryDashboard",
+              "preText": "Registry",
+              "style": "link"
+            },
+            {
+              "id": "b19ecf0f-03cd-46d8-9ed1-8e8f6beadd23",
+              "cellValue": "WorkbookPage",
+              "linkTarget": "parameter",
+              "linkLabel": "Process Dashboard",
+              "subTarget": "ProcessDashboard",
+              "style": "link"
+            },
+            {
+              "id": "a2632af6-0046-4cd6-8dac-b1336bc48ad2",
+              "cellValue": "WorkbookPage",
+              "linkTarget": "parameter",
+              "linkLabel": "Network Dashboard",
+              "subTarget": "NetworkDashboard",
+              "style": "link"
+            },
+            {
+              "id": "02af6200-b548-4db9-aa18-a98e6407777a",
+              "cellValue": "WorkbookPage",
+              "linkTarget": "parameter",
+              "linkLabel": "AD Abuse",
+              "subTarget": "ADAbuse",
+              "style": "link"
+            }
+          ]
+        },
+        "name": "links - 12"
+      },
+      {
+        "type": 9,
+        "content": {
+          "version": "KqlParameterItem/1.0",
+          "parameters": [
+            {
+              "id": "c1186639-9160-448c-b874-17fa94b84f1c",
+              "version": "KqlParameterItem/1.0",
+              "name": "TimeRange",
+              "label": "Time Range",
+              "type": 4,
+              "isRequired": true,
+              "typeSettings": {
+                "selectableValues": [
+                  {
+                    "durationMs": 300000
+                  },
+                  {
+                    "durationMs": 900000
+                  },
+                  {
+                    "durationMs": 1800000
+                  },
+                  {
+                    "durationMs": 3600000
+                  },
+                  {
+                    "durationMs": 14400000
+                  },
+                  {
+                    "durationMs": 43200000
+                  },
+                  {
+                    "durationMs": 86400000
+                  },
+                  {
+                    "durationMs": 172800000
+                  },
+                  {
+                    "durationMs": 259200000
+                  },
+                  {
+                    "durationMs": 604800000
+                  },
+                  {
+                    "durationMs": 1209600000
+                  },
+                  {
+                    "durationMs": 2419200000
+                  },
+                  {
+                    "durationMs": 2592000000
+                  },
+                  {
+                    "durationMs": 5184000000
+                  },
+                  {
+                    "durationMs": 7776000000
+                  }
+                ],
+                "allowCustom": true
+              },
+              "value": {
+                "durationMs": 14400000
+              }
+            },
+            {
+              "id": "23587bba-2198-4898-8228-59a16c216267",
+              "version": "KqlParameterItem/1.0",
+              "name": "CompromDevice",
+              "label": "Compromised Device",
+              "type": 2,
+              "isRequired": true,
+              "multiSelect": true,
+              "quote": "'",
+              "delimiter": ",",
+              "query": "DeviceInfo\r\n| summarize by DeviceName\r\n| sort by DeviceName asc",
+              "typeSettings": {
+                "additionalResourceOptions": [],
+                "showDefault": false
+              },
+              "timeContext": {
+                "durationMs": 86400000
+              },
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "value": []
+            }
+          ],
+          "style": "above",
+          "queryType": 0,
+          "resourceType": "microsoft.operationalinsights/workspaces"
+        },
+        "name": "parameters - 1"
+      },
+      {
+        "type": 12,
+        "content": {
+          "version": "NotebookGroup/1.0",
+          "groupType": "editable",
+          "items": [
+            {
+              "type": 3,
+              "content": {
+                "version": "KqlItem/1.0",
+                "query": "DeviceNetworkEvents\r\n| summarize count() by ActionType, bin(TimeGenerated, 1d)",
+                "size": 0,
+                "title": "Network activity by ActionType",
+                "timeContextFromParameter": "TimeRange",
+                "queryType": 0,
+                "resourceType": "microsoft.operationalinsights/workspaces",
+                "visualization": "barchart",
+                "tileSettings": {
+                  "showBorder": false,
+                  "titleContent": {
+                    "columnMatch": "ActionType",
+                    "formatter": 1
+                  },
+                  "leftContent": {
+                    "columnMatch": "count_",
+                    "formatter": 12,
+                    "formatOptions": {
+                      "palette": "auto"
+                    },
+                    "numberFormat": {
+                      "unit": 17,
+                      "options": {
+                        "maximumSignificantDigits": 3,
+                        "maximumFractionDigits": 2
+                      }
+                    }
+                  }
+                },
+                "graphSettings": {
+                  "type": 0,
+                  "topContent": {
+                    "columnMatch": "ActionType",
+                    "formatter": 1
+                  },
+                  "centerContent": {
+                    "columnMatch": "count_",
+                    "formatter": 1,
+                    "numberFormat": {
+                      "unit": 17,
+                      "options": {
+                        "maximumSignificantDigits": 3,
+                        "maximumFractionDigits": 2
+                      }
+                    }
+                  }
+                }
+              },
+              "conditionalVisibility": {
+                "parameterName": "WorkbookPage",
+                "comparison": "isEqualTo",
+                "value": "NetworkDashboard"
+              },
+              "name": "query - 4"
+            },
+            {
+              "type": 3,
+              "content": {
+                "version": "KqlItem/1.0",
+                "query": "let IPRegex = '[0-9]{1,3}\\\\.[0-9]{1,3}\\\\.[0-9]{1,3}\\\\.[0-9]{1,3}';\r\nDeviceNetworkEvents\r\n| where DeviceName in ({CompromDevice})\r\n| where ActionType == \"InboundConnectionAccepted\"\r\n| extend FourToSixPrivate = extract(IPRegex, 0, RemoteIP)\r\n| extend RemoteIPIsPrivate = iff(ipv4_is_private(RemoteIP), 1, iff(ipv4_is_private(FourToSixPrivate), 1, 0))\r\n| extend GeoIPInfo = geo_info_from_ip_address(RemoteIP)\r\n| extend country = tostring(parse_json(GeoIPInfo).country), state = tostring(parse_json(GeoIPInfo).state), city = tostring(parse_json(GeoIPInfo).city), latitude = tostring(parse_json(GeoIPInfo).latitude), longitude = tostring(parse_json(GeoIPInfo).longitude)\r\n| project TimeGenerated, DeviceName, LocalIP, LocalPort, RemoteIP, RemotePort,RemoteIPIsPrivate, InitiatingProcessCommandLine, InitiatingProcessAccountName, FourToSixPrivate, country, state\r\n| sort by TimeGenerated desc",
+                "size": 0,
+                "showAnalytics": true,
+                "title": "Incoming accepted connections",
+                "timeContextFromParameter": "TimeRange",
+                "showRefreshButton": true,
+                "queryType": 0,
+                "resourceType": "microsoft.operationalinsights/workspaces",
+                "gridSettings": {
+                  "rowLimit": 10000,
+                  "filter": true
+                }
+              },
+              "conditionalVisibility": {
+                "parameterName": "WorkbookPage",
+                "comparison": "isEqualTo",
+                "value": "NetworkDashboard"
+              },
+              "name": "query - 0"
+            },
+            {
+              "type": 3,
+              "content": {
+                "version": "KqlItem/1.0",
+                "query": "let IPRegex = '[0-9]{1,3}\\\\.[0-9]{1,3}\\\\.[0-9]{1,3}\\\\.[0-9]{1,3}';\r\nDeviceNetworkEvents\r\n| where DeviceName in ({CompromDevice})\r\n// Only list the succesfull connections\r\n| where ActionType == \"ConnectionSuccess\"\r\n// MDE Device Discovery filter\r\n| where InitiatingProcessFileName <> \"sensendr.exe\"\r\n// Add column that identifies RFC 1918 addresses\r\n| extend IsPrivateAddress = ipv4_is_private(RemoteIP)\r\n// Lateral movement is mostly identified by filtering on the private ip addresses and its connections.\r\n// This query is build to detect private IP connections and not public ip connections.\r\n| where IsPrivateAddress == 1\r\n// Filter System related activities performed by local service\r\n| where InitiatingProcessAccountName != \"local service\"\r\n// Only list the last connection to each IP address.\r\n| summarize arg_max(TimeGenerated, *), ConnectedPorts = make_set(RemotePort) by RemoteIP\r\n| project\r\n     RemoteIP,\r\n     ConnectedPorts,\r\n     RemoteUrl,\r\n     InitiatingProcessAccountSid,\r\n     InitiatingProcessAccountUpn,\r\n     CompromisedDevice = DeviceName\r\n// Join the network info of the remote IP address, to find the devicename that belongs to that IP\r\n| join kind=inner (DeviceNetworkInfo\r\n//     | where TimeGenerated > ago(SearchWindow)\r\n     | extend IPAddres = extract(IPRegex, 0, tostring(IPAddresses))\r\n     // See RFC 1918, these are not DHCP or Static addresses. Do leave them if you do NOT have DHCP running.\r\n     | where not(ipv4_is_in_range(IPAddres, \"169.254.0.0/16\"))\r\n     | distinct IPAddres, DeviceName)\r\n     on $left.RemoteIP == $right.IPAddres\r\n// Only list rows where the compromised device does not equal the RemoteDevice\r\n| where not(CompromisedDevice  == DeviceName)\r\n| project RemoteIP, RemoteDeviceName = DeviceName, ConnectedPorts, RemoteUrl, InitiatingProcessAccountSid, InitiatingProcessAccountUpn, CompromisedDevice\r\n// Known false positives:\r\n// Benign Edge Traffic, which did not initate a connection to an actual remote device.\r\n//| where not(tostring(ConnectedPorts) == \"[8009,8008]\" or tostring(ConnectedPorts) == \"[8008,8009]\" or tostring(ConnectedPorts) == \"[8009]\" or tostring(ConnectedPorts) == \"[8009]\")",
+                "size": 0,
+                "showAnalytics": true,
+                "title": "Internal outbound connections made by compromised device",
+                "timeContextFromParameter": "TimeRange",
+                "showRefreshButton": true,
+                "queryType": 0,
+                "resourceType": "microsoft.operationalinsights/workspaces",
+                "gridSettings": {
+                  "rowLimit": 10000,
+                  "filter": true
+                }
+              },
+              "conditionalVisibility": {
+                "parameterName": "WorkbookPage",
+                "comparison": "isEqualTo",
+                "value": "NetworkDashboard"
+              },
+              "showPin": true,
+              "name": "query - 2",
+              "styleSettings": {
+                "showBorder": true
+              }
+            },
+            {
+              "type": 3,
+              "content": {
+                "version": "KqlItem/1.0",
+                "query": "DeviceNetworkEvents\r\n| where DeviceName in ({CompromDevice})\r\n| where RemotePort == 445\r\n| where ActionType == \"ConnectionSuccess\"\r\n| project TimeGenerated, RemoteIP, RemoteUrl, InitiatingProcessFolderPath, InitiatingProcessAccountSid, InitiatingProcessAccountUpn\r\n| sort by TimeGenerated desc",
+                "size": 0,
+                "showAnalytics": true,
+                "title": "Successfull outbound SMB connections",
+                "timeContextFromParameter": "TimeRange",
+                "showRefreshButton": true,
+                "queryType": 0,
+                "resourceType": "microsoft.operationalinsights/workspaces",
+                "gridSettings": {
+                  "rowLimit": 10000,
+                  "filter": true
+                }
+              },
+              "conditionalVisibility": {
+                "parameterName": "WorkbookPage",
+                "comparison": "isEqualTo",
+                "value": "NetworkDashboard"
+              },
+              "showPin": true,
+              "name": "query - 4"
+            },
+            {
+              "type": 3,
+              "content": {
+                "version": "KqlItem/1.0",
+                "query": "DeviceNetworkEvents\r\n| where DeviceName in ({CompromDevice})\r\n| where LocalPort == 445\r\n| where ActionType == \"InboundConnectionAccepted\"\r\n| project TimeGenerated, RemoteIP, RemoteUrl, InitiatingProcessFolderPath, InitiatingProcessAccountSid, InitiatingProcessAccountUpn\r\n| sort by TimeGenerated desc",
+                "size": 0,
+                "title": "All successfull inbound SMB connections",
+                "timeContextFromParameter": "TimeRange",
+                "queryType": 0,
+                "resourceType": "microsoft.operationalinsights/workspaces"
+              },
+              "conditionalVisibility": {
+                "parameterName": "WorkbookPage",
+                "comparison": "isEqualTo",
+                "value": "NetworkDashboard"
+              },
+              "name": "query - 5"
+            }
+          ]
+        },
+        "name": "network"
+      },
+      {
+        "type": 3,
+        "content": {
+          "version": "KqlItem/1.0",
+          "query": "// Collect all ASR triggers from the compromised device\r\nlet ASREvents = DeviceEvents\r\n     | where DeviceName in ({CompromDevice})\r\n     | where ActionType startswith \"ASR\"\r\n     | project TimeGenerated,DeviceName,ActionType, FileName, FolderPath, ProcessCommandLine, InitiatingProcessCommandLine,InitiatingProcessFolderPath, InitiatingProcessAccountDomain,InitiatingProcessAccountName,InitiatingProcessCreationTime,InitiatingProcessParentCreationTime, AccountDomain, AccountName;\r\n// Collect all SmartScreen events from the compromised device\r\nlet SmartScreenEvents = DeviceEvents\r\n     | where DeviceName in ({CompromDevice})\r\n     | where ActionType in ('SmartScreenAppWarning', 'SmartScreenUrlWarning')\r\n     | extend SmartScreenTrigger = iff(ActionType == \"SmartScreenUrlWarning\", RemoteUrl, FileName), ReasonForTrigger = parse_json(AdditionalFields).Experience\r\n     | project TimeGenerated, DeviceName, ActionType, SmartScreenTrigger, ReasonForTrigger, InitiatingProcessCommandLine,InitiatingProcessFolderPath, InitiatingProcessAccountDomain, InitiatingProcessAccountName, InitiatingProcessParentFileName,InitiatingProcessCreationTime,InitiatingProcessParentCreationTime;\r\n// List all AV detections from the compromised device\r\nlet AntivirusDetections = DeviceEvents\r\n     | where DeviceName in ({CompromDevice})\r\n     | where ActionType == \"AntivirusDetection\"\r\n     | extend ThreatName = tostring(parse_json(AdditionalFields).ThreatName)\r\n     | extend WasExecutingWhileDetected = tostring(AdditionalFields.WasExecutingWhileDetected)\r\n     | extend WasRemediated = tostring(AdditionalFields.WasRemediated)\r\n     | project TimeGenerated, DeviceName, ActionType, ThreatName, FileName, FolderPath, SHA1, InitiatingProcessAccountSid,WasExecutingWhileDetected, WasRemediated ;\r\n// List all tampering actions from a compromised device\r\nlet TamperingAttempts = DeviceEvents\r\n     | where DeviceName in ({CompromDevice})\r\n     | where ActionType == \"TamperingAttempt\"\r\n     | extend TamperingAction = tostring(parse_json(AdditionalFields).TamperingAction), Status = tostring(parse_json(AdditionalFields).Status), Target = tostring(parse_json(AdditionalFields).Target)\r\n     | project TimeGenerated, DeviceName, ActionType, TamperingAction, Status, Target, InitiatingProcessCommandLine;\r\n// List all exploit guard events\r\nlet ExploitGuardEvents = DeviceEvents\r\n     | where DeviceName in ({CompromDevice})\r\n     | where ActionType startswith \"ExploitGuard\"\r\n     | project TimeGenerated, DeviceName, ActionType, InitiatingProcessCommandLine, InitiatingProcessFileName, InitiatingProcessFolderPath, InitiatingProcessParentFileName,InitiatingProcessVersionInfoFileDescription, FileName, FolderPath, RemoteUrl;\r\n// List all amsi events\r\nlet AMSIEvents = DeviceEvents\r\n     | where DeviceName in ({CompromDevice})\r\n     | where ActionType contains \"Amsi\"\r\n     | extend Description = tostring(parse_json(AdditionalFields).Description)\r\n     | project TimeGenerated, DeviceName, ActionType,InitiatingProcessCommandLine,InitiatingProcessFileName,InitiatingProcessFolderPath,InitiatingProcessAccountDomain,InitiatingProcessAccountName,InitiatingProcessParentFileName, Description, FolderPath,InitiatingProcessCreationTime,InitiatingProcessParentCreationTime ;\r\n// Combine all results into one output\r\n(union isfuzzy=true\r\n     (ASREvents),\r\n     (SmartScreenEvents),\r\n     (AntivirusDetections),\r\n     (TamperingAttempts),\r\n     (ExploitGuardEvents),\r\n     (AMSIEvents)\r\n     | sort by TimeGenerated\r\n)",
+          "size": 0,
+          "title": "List of malicious activities",
+          "timeContextFromParameter": "TimeRange",
+          "showRefreshButton": true,
+          "exportedParameters": [
+            {
+              "fieldName": "ActionType",
+              "parameterName": "pn_ActionType",
+              "parameterType": 1
+            },
+            {
+              "fieldName": "FileName",
+              "parameterName": "pn_FileName",
+              "parameterType": 1
+            },
+            {
+              "fieldName": "FolderPath",
+              "parameterName": "pn_FolderPath",
+              "parameterType": 1
+            },
+            {
+              "fieldName": "ProcessCommandLine",
+              "parameterName": "pn_ProcessCommandLine",
+              "parameterType": 1
+            },
+            {
+              "fieldName": "InitiatingProcessCommandLine",
+              "parameterName": "pn_InitiatingProcessCommandLine",
+              "parameterType": 1
+            },
+            {
+              "fieldName": "DeviceName",
+              "parameterName": "pn_DeviceName",
+              "parameterType": 1
+            },
+            {
+              "fieldName": "SmartScreenTrigger",
+              "parameterName": "pn_SmartScreenTrigger",
+              "parameterType": 1
+            },
+            {
+              "fieldName": "ReasonForTrigger",
+              "parameterName": "pn_ReasonForTrigger",
+              "parameterType": 1
+            },
+            {
+              "fieldName": "ThreatName",
+              "parameterName": "pn_ThreatName",
+              "parameterType": 1
+            },
+            {
+              "fieldName": "SHA1",
+              "parameterName": "pn_SHA1",
+              "parameterType": 1
+            },
+            {
+              "fieldName": "InitiatingProcessAccountSid",
+              "parameterName": "pn_InitiatingProcessAccountSid",
+              "parameterType": 1
+            },
+            {
+              "fieldName": "TamperingAction",
+              "parameterName": "pn_TamperingAction",
+              "parameterType": 1
+            },
+            {
+              "fieldName": "Status",
+              "parameterName": "pn_Status",
+              "parameterType": 1
+            },
+            {
+              "fieldName": "Target",
+              "parameterName": "pn_Target",
+              "parameterType": 1
+            },
+            {
+              "fieldName": "RemoteUrl",
+              "parameterName": "pn_RemoteUrl",
+              "parameterType": 1
+            },
+            {
+              "fieldName": "Description",
+              "parameterName": "pn_Description",
+              "parameterType": 1
+            },
+            {
+              "fieldName": "InitiatingProcessFileName",
+              "parameterName": "pn_InitiatingProcessFileName",
+              "parameterType": 1
+            },
+            {
+              "fieldName": "InitiatingProcessFolderPath",
+              "parameterName": "pn_InitiatingProcessFolderPath",
+              "parameterType": 1
+            },
+            {
+              "fieldName": "InitiatingProcessParentFileName",
+              "parameterName": "pn_InitiatingProcessParentFileName",
+              "parameterType": 1
+            },
+            {
+              "fieldName": "InitiatingProcessVersionInfoFileDescription",
+              "parameterName": "pn_InitiatingProcessVersionInfoFileDescription",
+              "parameterType": 1
+            },
+            {
+              "fieldName": "InitiatingProcessAccountDomain",
+              "parameterName": "pn_InitiatingProcessAccountDomain",
+              "parameterType": 1
+            },
+            {
+              "fieldName": "InitiatingProcessAccountName",
+              "parameterName": "pn_InitiatingProcessAccountName",
+              "parameterType": 1
+            },
+            {
+              "fieldName": "InitiatingProcessCreationTime",
+              "parameterName": "pn_InitiatingProcessCreationTime",
+              "parameterType": 1
+            },
+            {
+              "fieldName": "InitiatingProcessParentCreationTime",
+              "parameterName": "pn_InitiatingProcessParentCreationTime",
+              "parameterType": 1
+            },
+            {
+              "fieldName": "WasExecutingWhileDetected",
+              "parameterName": "pn_WasExecutingWhileDetected",
+              "parameterType": 1
+            },
+            {
+              "fieldName": "WasRemediated",
+              "parameterName": "pn_WasRemediated",
+              "parameterType": 1
+            }
+          ],
+          "queryType": 0,
+          "resourceType": "microsoft.operationalinsights/workspaces",
+          "gridSettings": {
+            "rowLimit": 1000,
+            "filter": true
+          }
+        },
+        "conditionalVisibility": {
+          "parameterName": "WorkbookPage",
+          "comparison": "isEqualTo",
+          "value": "MainDashboard"
+        },
+        "customWidth": "75",
+        "name": "query - 10",
+        "styleSettings": {
+          "showBorder": true
+        }
+      },
+      {
+        "type": 1,
+        "content": {
+          "json": "- ActionType: **{pn_ActionType}**\r\n- FileName: **{pn_FileName}**\r\n- FolderPath: **{pn_FolderPath}**\r\n- ProcessCommandLine: **{pn_ProcessCommandLine}**\r\n- InitiatingProcessCommandLine: **{pn_InitiatingProcessCommandLine}**\r\n- InitiatingProcessFileName: **{pn_InitiatingProcessFileName}**\r\n- InitiatingProcessFolderPath: **{pn_InitiatingProcessFolderPath}**\r\n- InitiatingProcessParentFileName: **{pn_InitiatingProcessParentFileName}**\r\n- InitiatingProcessVersionInfoFileDescription: **{pn_InitiatingProcessVersionInfoFileDescription}**\r\n- InitiatingProcessAccountDomain: **{pn_InitiatingProcessAccountDomain}**\r\n- InitiatingProcessAccountName: **{pn_InitiatingProcessAccountName}**\r\n- InitiatingProcessCreationTime: **{pn_InitiatingProcessCreationTime}**\r\n- InitiatingProcessParentCreationTime: **{pn_InitiatingProcessParentCreationTime}**\r\n- DeviceName: **{pn_DeviceName}**\r\n- SmartScreenTrigger: **{pn_SmartScreenTrigger}**\r\n- ReasonForTrigger: **{pn_ReasonForTrigger}**\r\n- ThreatName: **{pn_ThreatName}**\r\n- WasExecutingWhileDetected: **{pn_WasExecutingWhileDetected}**\r\n- WasRemediated: **­{pn_WasRemediated}**\r\n- SHA1: **{pn_SHA1}**\r\n- InitiatingProcessAccountSid: **{pn_InitiatingProcessAccountSid}**\r\n- TamperingAction: **{pn_TamperingAction}**\r\n- Status: **{pn_Status}**\r\n- Target: **{pn_Target}**\r\n- RemoteUrl: **{pn_RemoteUrl}**\r\n- Description: **{pn_Description}**",
+          "style": "info"
+        },
+        "conditionalVisibility": {
+          "parameterName": "WorkbookPage",
+          "comparison": "isEqualTo",
+          "value": "MainDashboard"
+        },
+        "customWidth": "25",
+        "name": "text - 11",
+        "styleSettings": {
+          "showBorder": true
+        }
+      },
+      {
+        "type": 12,
+        "content": {
+          "version": "NotebookGroup/1.0",
+          "groupType": "editable",
+          "items": [
+            {
+              "type": 3,
+              "content": {
+                "version": "KqlItem/1.0",
+                "query": "DeviceProcessEvents\r\n| where DeviceName in ({CompromDevice})\r\n| where AccountName != \"system\" // If you suspect that the system user is compromised, remove this filter.\r\n| where InitiatingProcessFileName == \"powershell.exe\"\r\n| sort by TimeGenerated\r\n| project TimeGenerated, DeviceName, ActionType, FileName, ProcessCommandLine, AccountDomain, AccountName, InitiatingProcessCommandLine",
+                "size": 0,
+                "title": "Powershell executions",
+                "timeContextFromParameter": "TimeRange",
+                "queryType": 0,
+                "resourceType": "microsoft.operationalinsights/workspaces",
+                "gridSettings": {
+                  "rowLimit": 10000,
+                  "filter": true
+                }
+              },
+              "conditionalVisibility": {
+                "parameterName": "WorkbookPage",
+                "comparison": "isEqualTo",
+                "value": "ProcessDashboard"
+              },
+              "name": "query - 3"
+            },
+            {
+              "type": 3,
+              "content": {
+                "version": "KqlItem/1.0",
+                "query": "DeviceEvents\r\n| where DeviceName in ({CompromDevice})\r\n| where ActionType == \"AmsiScriptDetection\"\r\n| extend Description = tostring(parse_json(AdditionalFields).Description)\r\n| project TimeGenerated, DeviceName, InitiatingProcessCommandLine, Description\r\n| sort by TimeGenerated desc",
+                "size": 0,
+                "title": "AMSI script detections",
+                "timeContextFromParameter": "TimeRange",
+                "queryType": 0,
+                "resourceType": "microsoft.operationalinsights/workspaces"
+              },
+              "conditionalVisibility": {
+                "parameterName": "WorkbookPage",
+                "comparison": "isEqualTo",
+                "value": "ProcessDashboard"
+              },
+              "name": "query - 9"
+            }
+          ]
+        },
+        "name": "powershell"
+      },
+      {
+        "type": 3,
+        "content": {
+          "version": "KqlItem/1.0",
+          "query": "let RegistryRunKeys = dynamic \r\n([@\"HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows\\CurrentVersion\\Run\",\r\n@\"HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows\\CurrentVersion\\RunOnce\",\r\n@\"HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Run\",\r\n@\"HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\RunOnce\"]);\r\nDeviceRegistryEvents\r\n| where DeviceName in ({CompromDevice})\r\n| where RegistryKey has_any (RegistryRunKeys)\r\n| extend RegistryChangeInfo = pack_dictionary(\"RegistryKey\", RegistryKey, \"Action Performed\", ActionType, \"Old Value\", PreviousRegistryKey, \"New Value\", RegistryValueData)\r\n| summarize TotalRunKeysChanged = count(), RegistryInfo = make_set(RegistryChangeInfo) by DeviceName",
+          "size": 0,
+          "title": "Changes on registry run keys",
+          "timeContextFromParameter": "TimeRange",
+          "exportParameterName": "RegKeys",
+          "queryType": 0,
+          "resourceType": "microsoft.operationalinsights/workspaces",
+          "gridSettings": {
+            "formatters": [
+              {
+                "columnMatch": "RegistryInfo",
+                "formatter": 7,
+                "formatOptions": {
+                  "linkTarget": "CellDetails",
+                  "linkIsContextBlade": true
+                }
+              }
+            ]
+          }
+        },
+        "conditionalVisibility": {
+          "parameterName": "WorkbookPage",
+          "comparison": "isEqualTo",
+          "value": "RegistryDashboard"
+        },
+        "name": "query - 6"
+      },
+      {
+        "type": 3,
+        "content": {
+          "version": "KqlItem/1.0",
+          "query": "let registryoutput = dynamic({RegKeys}) ;\r\nlet RegistryRunKeys = dynamic \r\n([@\"HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows\\CurrentVersion\\Run\",\r\n@\"HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows\\CurrentVersion\\RunOnce\",\r\n@\"HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Run\",\r\n@\"HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\RunOnce\"]);\r\nDeviceRegistryEvents\r\n| where DeviceName == registryoutput.DeviceName\r\n| where RegistryKey has_any (RegistryRunKeys)\r\n| project TimeGenerated, ActionType,Initiator=strcat(InitiatingProcessAccountDomain, \"\\\\\", InitiatingProcessAccountName), InitiatingProcessCommandLine, InitiatingProcessFolderPath, InitiatingProcessIntegrityLevel, InitiatingProcessSHA1, InitiatingProcessSHA256, InitiatingProcessVersionInfoFileDescription, RegistryKey, RegistryValueData, RegistryValueName, InitiatingProcessParentCreationTime, InitiatingProcessCreationTime\r\n| sort by TimeGenerated desc",
+          "size": 0,
+          "title": "Details of changes on registry run keys",
+          "timeContextFromParameter": "TimeRange",
+          "queryType": 0,
+          "resourceType": "microsoft.operationalinsights/workspaces",
+          "gridSettings": {
+            "sortBy": [
+              {
+                "itemKey": "TimeGenerated",
+                "sortOrder": 2
+              }
+            ]
+          },
+          "sortBy": [
+            {
+              "itemKey": "TimeGenerated",
+              "sortOrder": 2
+            }
+          ]
+        },
+        "conditionalVisibility": {
+          "parameterName": "WorkbookPage",
+          "comparison": "isEqualTo",
+          "value": "RegistryDashboard"
+        },
+        "name": "query - 11"
+      },
+      {
+        "type": 3,
+        "content": {
+          "version": "KqlItem/1.0",
+          "query": "IdentityQueryEvents\r\n| where DeviceName in ({CompromDevice})\r\n| where Protocol == \"Ldap\"\r\n| project TimeGenerated, QueryType, Query, QueryTarget, DeviceName, DestinationDeviceName, TargetAccountUpn\r\n| sort by TimeGenerated desc",
+          "size": 0,
+          "title": "LDAP searches",
+          "timeContextFromParameter": "TimeRange",
+          "showRefreshButton": true,
+          "queryType": 0,
+          "resourceType": "microsoft.operationalinsights/workspaces"
+        },
+        "conditionalVisibility": {
+          "parameterName": "WorkbookPage",
+          "comparison": "isEqualTo",
+          "value": "ADAbuse"
+        },
+        "name": "query - 8"
+      },
+      {
+        "type": 3,
+        "content": {
+          "version": "KqlItem/1.0",
+          "query": "DeviceNetworkEvents\r\n| where DeviceName in ({CompromDevice})\r\n| where ActionType == 'HttpConnectionInspected'\r\n| extend json = todynamic(AdditionalFields)\r\n| extend direction= tostring(json.direction), user_agent=tostring(json.user_agent), uri=tostring(json.uri)\r\n| extend host = tostring(json.host)\r\n| extend method = tostring(json.method)\r\n| extend request_body_len = tostring(json.request_body_len)\r\n| extend response_body_len = tostring(json.response_body_len)\r\n| extend status_code = tostring(json.status_code)\r\n| extend status_msg = tostring(json.status_msg)\r\n| where uri matches regex @\"\\.(?:dll|exe|zip|7z|ps1|ps|bat|sh|cmd|com|cpl|ex|jse|lnk|msc|reg|vb|vbe|ws|wsf)$\"\r\n| project TimeGenerated, RemoteIP, URL=strcat(host,uri), method, direction, request_body_len, response_body_len, status_code, status_msg",
+          "size": 0,
+          "title": "Executable file extensions downloaded",
+          "timeContextFromParameter": "TimeRange",
+          "queryType": 0,
+          "resourceType": "microsoft.operationalinsights/workspaces",
+          "gridSettings": {
+            "filter": true
+          }
+        },
+        "conditionalVisibility": {
+          "parameterName": "WorkbookPage",
+          "comparison": "isEqualTo",
+          "value": "MainDashboard"
+        },
+        "name": "query - 10",
+        "styleSettings": {
+          "showBorder": true
+        }
+      },
+      {
+        "type": 12,
+        "content": {
+          "version": "NotebookGroup/1.0",
+          "groupType": "editable",
+          "items": [
+            {
+              "type": 3,
+              "content": {
+                "version": "KqlItem/1.0",
+                "query": "DeviceProcessEvents\r\n| summarize count() by bin(TimeGenerated,1d)",
+                "size": 1,
+                "title": "Count (per day) of process events",
+                "color": "redBright",
+                "timeContext": {
+                  "durationMs": 2592000000
+                },
+                "queryType": 0,
+                "resourceType": "microsoft.operationalinsights/workspaces",
+                "visualization": "timechart"
+              },
+              "customWidth": "50",
+              "conditionalVisibility": {
+                "parameterName": "WorkbookPage",
+                "comparison": "isEqualTo",
+                "value": "ProcessDashboard"
+              },
+              "name": "query - 13",
+              "styleSettings": {
+                "showBorder": true
+              }
+            },
+            {
+              "type": 3,
+              "content": {
+                "version": "KqlItem/1.0",
+                "query": "let LOLBins = dynamic([\"AppInstaller.exe\", \"Aspnet_Compiler.exe\", \"At.exe\", \"Atbroker.exe\", \"Bash.exe\", \"Bitsadmin.exe\", \"CertOC.exe\", \"CertReq.exe\", \"Certutil.exe\", \"Cmd.exe\", \"Cmdkey.exe\", \"cmdl32.exe\", \"Cmstp.exe\", \"ConfigSecurityPolicy.exe\", \"Conhost.exe\", \"Control.exe\", \"Csc.exe\", \"Cscript.exe\", \"CustomShellHost.exe\", \"DataSvcUtil.exe\", \"Desktopimgdownldr.exe\", \"DeviceCredentialDeployment.exe\", \"Dfsvc.exe\", \"Diantz.exe\", \"Diskshadow.exe\", \"Dnscmd.exe\", \"Esentutl.exe\", \"Eventvwr.exe\", \"Expand.exe\", \"Explorer.exe\", \"Extexport.exe\", \"Extrac32.exe\", \"Findstr.exe\", \"Finger.exe\", \"fltMC.exe\", \"Forfiles.exe\", \"Ftp.exe\", \"Gpscript.exe\", \"Hh.exe\", \"IMEWDBLD.exe\", \"Ie4uinit.exe\", \"Ieexec.exe\", \"Ilasm.exe\", \"Infdefaultinstall.exe\", \"Installutil.exe\", \"Jsc.exe\", \"Ldifde.exe\", \"Makecab.exe\", \"Mavinject.exe\", \"Msedge.exe\", \"Microsoft.Workflow.Compiler.exe\", \"Mmc.exe\", \"MpCmdRun.exe\", \"Msbuild.exe\", \"Msconfig.exe\", \"Msdt.exe\", \"Mshta.exe\", \"Msiexec.exe\", \"Netsh.exe\", \"Odbcconf.exe\", \"OfflineScannerShell.exe\", \"OneDriveStandaloneUpdater.exe\", \"Pcalua.exe\", \"Pcwrun.exe\", \"Pktmon.exe\", \"Pnputil.exe\", \"Presentationhost.exe\", \"Print.exe\", \"PrintBrm.exe\", \"Psr.exe\", \"Rasautou.exe\", \"rdrleakdiag.exe\", \"Reg.exe\", \"Regasm.exe\", \"Regedit.exe\", \"Regini.exe\", \"Register-cimprovider.exe\", \"Regsvcs.exe\", \"Regsvr32.exe\", \"Replace.exe\", \"Rpcping.exe\", \"Rundll32.exe\", \"Runexehelper.exe\", \"Runonce.exe\", \"Runscripthelper.exe\", \"Sc.exe\", \"Schtasks.exe\", \"Scriptrunner.exe\", \"Setres.exe\", \"SettingSyncHost.exe\", \"Stordiag.exe\", \"SyncAppvPublishingServer.exe\", \"Ttdinject.exe\", \"Tttracer.exe\", \"Unregmp2.exe\", \"vbc.exe\", \"Verclsid.exe\", \"Wab.exe\", \"winget.exe\", \"Wlrmdr.exe\", \"Wmic.exe\", \"WorkFolders.exe\", \"Wscript.exe\", \"Wsreset.exe\", \"wuauclt.exe\", \"Xwizard.exe\", \"fsutil.exe\", \"wt.exe\", \"GfxDownloadWrapper.exe\", \"Advpack.dll\", \"Desk.cpl\", \"Dfshim.dll\", \"Ieadvpack.dll\", \"Ieframe.dll\", \"Mshtml.dll\", \"Pcwutl.dll\", \"Setupapi.dll\", \"Shdocvw.dll\", \"Shell32.dll\", \"Syssetup.dll\", \"Url.dll\", \"Zipfldr.dll\", \"Comsvcs.dll\", \"AccCheckConsole.exe\", \"adplus.exe\", \"AgentExecutor.exe\", \"Appvlp.exe\", \"Bginfo.exe\", \"Cdb.exe\", \"coregen.exe\", \"Createdump.exe\", \"csi.exe\", \"DefaultPack.EXE\", \"Devinit.exe\"]);\r\nDeviceProcessEvents\r\n| where DeviceName in ({CompromDevice})\r\n| where InitiatingProcessFileName in~ (LOLBins)\r\n| summarize TotalExecutions = count() by InitiatingProcessFileName\r\n| sort by TotalExecutions",
+                "size": 0,
+                "title": "Number of executions by LOLBINS",
+                "timeContextFromParameter": "TimeRange",
+                "exportParameterName": "par_lolbindetails",
+                "queryType": 0,
+                "resourceType": "microsoft.operationalinsights/workspaces"
+              },
+              "customWidth": "35",
+              "conditionalVisibility": {
+                "parameterName": "WorkbookPage",
+                "comparison": "isEqualTo",
+                "value": "ProcessDashboard"
+              },
+              "name": "query - 14",
+              "styleSettings": {
+                "showBorder": true
+              }
+            },
+            {
+              "type": 3,
+              "content": {
+                "version": "KqlItem/1.0",
+                "query": "let lolbindetails = dynamic({par_lolbindetails}) ;\r\nlet LOLBins = dynamic([\"AppInstaller.exe\", \"Aspnet_Compiler.exe\", \"At.exe\", \"Atbroker.exe\", \"Bash.exe\", \"Bitsadmin.exe\", \"CertOC.exe\", \"CertReq.exe\", \"Certutil.exe\", \"Cmd.exe\", \"Cmdkey.exe\", \"cmdl32.exe\", \"Cmstp.exe\", \"ConfigSecurityPolicy.exe\", \"Conhost.exe\", \"Control.exe\", \"Csc.exe\", \"Cscript.exe\", \"CustomShellHost.exe\", \"DataSvcUtil.exe\", \"Desktopimgdownldr.exe\", \"DeviceCredentialDeployment.exe\", \"Dfsvc.exe\", \"Diantz.exe\", \"Diskshadow.exe\", \"Dnscmd.exe\", \"Esentutl.exe\", \"Eventvwr.exe\", \"Expand.exe\", \"Explorer.exe\", \"Extexport.exe\", \"Extrac32.exe\", \"Findstr.exe\", \"Finger.exe\", \"fltMC.exe\", \"Forfiles.exe\", \"Ftp.exe\", \"Gpscript.exe\", \"Hh.exe\", \"IMEWDBLD.exe\", \"Ie4uinit.exe\", \"Ieexec.exe\", \"Ilasm.exe\", \"Infdefaultinstall.exe\", \"Installutil.exe\", \"Jsc.exe\", \"Ldifde.exe\", \"Makecab.exe\", \"Mavinject.exe\", \"Msedge.exe\", \"Microsoft.Workflow.Compiler.exe\", \"Mmc.exe\", \"MpCmdRun.exe\", \"Msbuild.exe\", \"Msconfig.exe\", \"Msdt.exe\", \"Mshta.exe\", \"Msiexec.exe\", \"Netsh.exe\", \"Odbcconf.exe\", \"OfflineScannerShell.exe\", \"OneDriveStandaloneUpdater.exe\", \"Pcalua.exe\", \"Pcwrun.exe\", \"Pktmon.exe\", \"Pnputil.exe\", \"Presentationhost.exe\", \"Print.exe\", \"PrintBrm.exe\", \"Psr.exe\", \"Rasautou.exe\", \"rdrleakdiag.exe\", \"Reg.exe\", \"Regasm.exe\", \"Regedit.exe\", \"Regini.exe\", \"Register-cimprovider.exe\", \"Regsvcs.exe\", \"Regsvr32.exe\", \"Replace.exe\", \"Rpcping.exe\", \"Rundll32.exe\", \"Runexehelper.exe\", \"Runonce.exe\", \"Runscripthelper.exe\", \"Sc.exe\", \"Schtasks.exe\", \"Scriptrunner.exe\", \"Setres.exe\", \"SettingSyncHost.exe\", \"Stordiag.exe\", \"SyncAppvPublishingServer.exe\", \"Ttdinject.exe\", \"Tttracer.exe\", \"Unregmp2.exe\", \"vbc.exe\", \"Verclsid.exe\", \"Wab.exe\", \"winget.exe\", \"Wlrmdr.exe\", \"Wmic.exe\", \"WorkFolders.exe\", \"Wscript.exe\", \"Wsreset.exe\", \"wuauclt.exe\", \"Xwizard.exe\", \"fsutil.exe\", \"wt.exe\", \"GfxDownloadWrapper.exe\", \"Advpack.dll\", \"Desk.cpl\", \"Dfshim.dll\", \"Ieadvpack.dll\", \"Ieframe.dll\", \"Mshtml.dll\", \"Pcwutl.dll\", \"Setupapi.dll\", \"Shdocvw.dll\", \"Shell32.dll\", \"Syssetup.dll\", \"Url.dll\", \"Zipfldr.dll\", \"Comsvcs.dll\", \"AccCheckConsole.exe\", \"adplus.exe\", \"AgentExecutor.exe\", \"Appvlp.exe\", \"Bginfo.exe\", \"Cdb.exe\", \"coregen.exe\", \"Createdump.exe\", \"csi.exe\", \"DefaultPack.EXE\", \"Devinit.exe\"]);\r\nDeviceProcessEvents\r\n| where DeviceName in ({CompromDevice})\r\n| where InitiatingProcessFileName == lolbindetails.InitiatingProcessFileName",
+                "size": 0,
+                "timeContextFromParameter": "TimeRange",
+                "queryType": 0,
+                "resourceType": "microsoft.operationalinsights/workspaces",
+                "gridSettings": {
+                  "formatters": [
+                    {
+                      "columnMatch": "TenantId",
+                      "formatter": 5
+                    },
+                    {
+                      "columnMatch": "DeviceId",
+                      "formatter": 5
+                    },
+                    {
+                      "columnMatch": "FileSize",
+                      "formatter": 5
+                    },
+                    {
+                      "columnMatch": "InitiatingProcessId",
+                      "formatter": 5
+                    },
+                    {
+                      "columnMatch": "InitiatingProcessIntegrityLevel",
+                      "formatter": 5
+                    },
+                    {
+                      "columnMatch": "InitiatingProcessLogonId",
+                      "formatter": 5
+                    },
+                    {
+                      "columnMatch": "InitiatingProcessMD5",
+                      "formatter": 5
+                    },
+                    {
+                      "columnMatch": "InitiatingProcessParentId",
+                      "formatter": 5
+                    },
+                    {
+                      "columnMatch": "InitiatingProcessSHA1",
+                      "formatter": 5
+                    },
+                    {
+                      "columnMatch": "InitiatingProcessSHA256",
+                      "formatter": 5
+                    },
+                    {
+                      "columnMatch": "InitiatingProcessTokenElevation",
+                      "formatter": 5
+                    },
+                    {
+                      "columnMatch": "InitiatingProcessFileSize",
+                      "formatter": 5
+                    },
+                    {
+                      "columnMatch": "InitiatingProcessVersionInfoCompanyName",
+                      "formatter": 5
+                    },
+                    {
+                      "columnMatch": "InitiatingProcessVersionInfoProductName",
+                      "formatter": 5
+                    },
+                    {
+                      "columnMatch": "InitiatingProcessVersionInfoProductVersion",
+                      "formatter": 5
+                    },
+                    {
+                      "columnMatch": "InitiatingProcessVersionInfoInternalFileName",
+                      "formatter": 5
+                    },
+                    {
+                      "columnMatch": "InitiatingProcessVersionInfoOriginalFileName",
+                      "formatter": 5
+                    },
+                    {
+                      "columnMatch": "InitiatingProcessVersionInfoFileDescription",
+                      "formatter": 5
+                    },
+                    {
+                      "columnMatch": "LogonId",
+                      "formatter": 5
+                    },
+                    {
+                      "columnMatch": "MD5",
+                      "formatter": 5
+                    },
+                    {
+                      "columnMatch": "MachineGroup",
+                      "formatter": 5
+                    },
+                    {
+                      "columnMatch": "ProcessId",
+                      "formatter": 5
+                    },
+                    {
+                      "columnMatch": "ProcessVersionInfoCompanyName",
+                      "formatter": 5
+                    },
+                    {
+                      "columnMatch": "ProcessVersionInfoProductName",
+                      "formatter": 5
+                    },
+                    {
+                      "columnMatch": "ProcessVersionInfoProductVersion",
+                      "formatter": 5
+                    },
+                    {
+                      "columnMatch": "ProcessVersionInfoInternalFileName",
+                      "formatter": 5
+                    },
+                    {
+                      "columnMatch": "ProcessVersionInfoOriginalFileName",
+                      "formatter": 5
+                    },
+                    {
+                      "columnMatch": "ProcessVersionInfoFileDescription",
+                      "formatter": 5
+                    },
+                    {
+                      "columnMatch": "InitiatingProcessSignerType",
+                      "formatter": 5
+                    },
+                    {
+                      "columnMatch": "InitiatingProcessSignatureStatus",
+                      "formatter": 5
+                    },
+                    {
+                      "columnMatch": "ReportId",
+                      "formatter": 5
+                    },
+                    {
+                      "columnMatch": "SHA1",
+                      "formatter": 5
+                    },
+                    {
+                      "columnMatch": "SHA256",
+                      "formatter": 5
+                    },
+                    {
+                      "columnMatch": "SourceSystem",
+                      "formatter": 5
+                    },
+                    {
+                      "columnMatch": "Type",
+                      "formatter": 5
+                    }
+                  ]
+                }
+              },
+              "customWidth": "50",
+              "conditionalVisibility": {
+                "parameterName": "WorkbookPage",
+                "comparison": "isEqualTo",
+                "value": "ProcessDashboard"
+              },
+              "name": "LolBin Details",
+              "styleSettings": {
+                "showBorder": true
+              }
+            }
+          ]
+        },
+        "name": "processes"
+      }
+    ],
+    "fallbackResourceIds": [
+      "/subscriptions/30b1d708-00cf-49ec-bf4f-fdb3aac12a04/resourcegroups/rg-sent-adv-hunting/providers/microsoft.operationalinsights/workspaces/sent-adv-hunting"
+    ],
+    "fromTemplateId": "https://sentinelus.hosting.portal.azure.net/sentinelus/Content/1.0.02453.3208-230920-012911/Scenarios/Ecosystem/Content/Workbooks/CustomWorkbook.json",
+    "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
+  }
