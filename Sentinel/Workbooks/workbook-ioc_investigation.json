@@ -33,19 +33,27 @@
             "label": "Subscription",
             "type": 6,
             "isRequired": true,
+            "multiSelect": true,
+            "quote": "'",
+            "delimiter": ",",
             "query": "summarize by subscriptionId\r\n| project value = strcat(\"/subscriptions/\", subscriptionId), label = subscriptionId, selected = iff(subscriptionId =~ '{DefaultSubscription_Internal}', true, false)",
             "crossComponentResources": [
               "value::selected"
             ],
             "typeSettings": {
-              "additionalResourceOptions": [],
+              "additionalResourceOptions": [
+                "value::all"
+              ],
               "showDefault": false
             },
             "timeContext": {
               "durationMs": 86400000
             },
             "queryType": 1,
-            "resourceType": "microsoft.resourcegraph/resources"
+            "resourceType": "microsoft.resourcegraph/resources",
+            "value": [
+              "value::all"
+            ]
           },
           {
             "id": "8dbb5df2-b053-415f-b0b2-435d91ba4b90",
@@ -54,22 +62,30 @@
             "label": "Workspace",
             "type": 5,
             "isRequired": true,
-            "query": "where type =~ 'microsoft.operationalinsights/workspaces'\r\n| project id",
+            "multiSelect": true,
+            "quote": "'",
+            "delimiter": ",",
+            "query": "where type =~ 'microsoft.operationalinsights/workspaces'\r\n| where strcat('/subscriptions/',subscriptionId) in ({pn_Subscription})\r\n| project id",
             "crossComponentResources": [
-              "{pn_Subscription}"
+              "value::selected"
             ],
             "typeSettings": {
               "resourceTypeFilter": {
                 "microsoft.operationalinsights/workspaces": true
               },
-              "additionalResourceOptions": []
+              "additionalResourceOptions": [
+                "value::all"
+              ],
+              "showDefault": false
             },
             "timeContext": {
               "durationMs": 86400000
             },
             "queryType": 1,
             "resourceType": "microsoft.resourcegraph/resources",
-            "value": "/subscriptions/30b1d708-00cf-49ec-bf4f-fdb3aac12a04/resourceGroups/rg-sent-adv-hunting/providers/Microsoft.OperationalInsights/workspaces/sent-adv-hunting"
+            "value": [
+              "value::all"
+            ]
           }
         ],
         "style": "above",
@@ -193,7 +209,7 @@
                     "durationMs": 86400000
                   },
                   "value": {
-                    "durationMs": 604800000
+                    "durationMs": 5184000000
                   },
                   "label": "Time Range"
                 },
@@ -209,7 +225,10 @@
                   "delimiter": ",",
                   "timeContext": {
                     "durationMs": 86400000
-                  }
+                  },
+                  "value": [
+                    "google.ca"
+                  ]
                 }
               ],
               "style": "above",
@@ -227,7 +246,7 @@
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "let Iocs = dynamic([{pn_Ioc}]);\r\nlet Downloads=(DeviceNetworkEvents\r\n| where ActionType == @\"HttpConnectionInspected\"\r\n| extend host = tostring(AdditionalFields.host)\r\n| extend uri = tostring(AdditionalFields.uri)\r\n| extend direction = tostring(AdditionalFields.direction)\r\n| extend user_agent = tostring(AdditionalFields.user_agent)\r\n| project TimeGenerated, DeviceName, FullUrl=strcat(host,uri), ActionType, direction,user_agent);\r\nlet remoteu= (DeviceNetworkEvents\r\n| where isnotempty( RemoteUrl)\r\n| project TimeGenerated,DeviceName,FullUrl=RemoteUrl, ActionType);\r\nunion Downloads,remoteu\r\n| where FullUrl has_any (Iocs)\r\n| sort by TimeGenerated desc",
+              "query": "let Iocs = dynamic([{pn_Ioc}]);\r\nlet Downloads=(DeviceNetworkEvents\r\n| where ActionType == @\"HttpConnectionInspected\"\r\n| extend host = tostring(AdditionalFields.host)\r\n| extend uri = tostring(AdditionalFields.uri)\r\n| extend direction = tostring(AdditionalFields.direction)\r\n| extend user_agent = tostring(AdditionalFields.user_agent)\r\n| project TimeGenerated, DeviceName, FullUrl=strcat(host,uri), ActionType, direction,user_agent);\r\nlet remoteu= (DeviceNetworkEvents\r\n| where isnotempty( RemoteUrl)\r\n| project TimeGenerated,DeviceName,FullUrl=RemoteUrl, LocalIP, User=strcat(InitiatingProcessAccountDomain,\"\\\\\", InitiatingProcessAccountName), ActionType);\r\nunion Downloads,remoteu\r\n| where FullUrl has_any (Iocs)\r\n| sort by TimeGenerated desc",
               "size": 0,
               "showAnalytics": true,
               "title": "Events matching specified URL(s)",
@@ -252,7 +271,10 @@
           }
         ]
       },
-      "name": "group - 4"
+      "name": "group - 4",
+      "styleSettings": {
+        "showBorder": true
+      }
     },
     {
       "type": 9,
@@ -465,7 +487,8 @@
                   "delimiter": ",",
                   "timeContext": {
                     "durationMs": 86400000
-                  }
+                  },
+                  "value": []
                 }
               ],
               "style": "above",
