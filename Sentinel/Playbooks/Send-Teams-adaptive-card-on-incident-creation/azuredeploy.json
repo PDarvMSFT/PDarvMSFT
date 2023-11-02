@@ -225,6 +225,9 @@
                                         "value":  "same"
                                     }
                                 ],
+                                "msteams":  {
+                                    "width":  "full"
+                                },
                                 "type":  "AdaptiveCard",
                                 "version":  "1.4"
                             }
@@ -324,7 +327,10 @@
                                     "type":  "AppendToArrayVariable",
                                     "inputs":  {
                                         "name":  "entities",
-                                        "value":  "  \"Entity\": \"@{items('For_each')['Entity']}\",\n  \"EntityType\": \"@{items('For_each')['Entity Type']}\""
+                                        "value":  {
+                                            "Entity":  "@{items('For_each')['Entity']}",
+                                            "EntityType":  "@{items('For_each')['Entity Type']}"
+                                        }
                                     }
                                 }
                             },
