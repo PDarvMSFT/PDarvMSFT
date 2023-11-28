@@ -1,55 +1,62 @@
 # Gets the Azure DevOps logs using the REST API
 
-Function Get-AzureDevOpsAuditLogs {
+function Get-AzureDevOpsAuditLogs {
     [CmdletBinding()]
-    Param(
+    param(
         [Parameter(Mandatory=$true)]
         [ValidateNotNullOrEmpty()]
-        [String] $OrganizationName,
+        [string] $OrganizationName,
 
         [Parameter(Mandatory=$false)]
         [ValidateNotNullOrEmpty()]
-        [String] $OutFilePath = "auditlogs.csv",
+        [string] $OutFilePath = "auditlogs.csv",
 
         [Parameter(Mandatory=$false)]
         [ValidateNotNullOrEmpty()]
-        [String] $LogType = "csv",
+        [string] $LogType = "csv",
 
-        [Parameter(Mandatory=$false,ParameterSetName='TimeRange')]
+        [Parameter(Mandatory=$false, ParameterSetName='TimeRange')]
         [ValidateNotNullOrEmpty()]
-        [String] $StartTime,
+        [string] $StartTime,
 
-        [Parameter(Mandatory=$false,ParameterSetName='TimeRange')]
+        [Parameter(Mandatory=$false, ParameterSetName='TimeRange')]
         [ValidateNotNullOrEmpty()]
-        [String] $EndTime
+        [string] $EndTime
     )
 
-    Begin {
+    begin {
         Write-Verbose "In Begin Block: Get-AzureDevOpsAuditLogs()"
-        $pat = Get-Content –Path ".\.token"
+        $pat = Get-Content -Path ".\token" -Raw
         $user = "admin@MngEnv745628.onmicrosoft.com"
-        $base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(("{0}:{1}" -f $user,$pat)))
+        $base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(("{0}:{1}" -f $user, $pat)))
     }
     
-    Process{
+    process {
         Write-Verbose "In Process Block: Get-AzureDevOpsAuditLogs()"
 
-        $url = ""
-        if ($StartTime -or $EndTime){
-            $url = "https://auditservice.dev.azure.com/$($OrganizationName)/_apis/audit/downloadlog?format=$($LogType)&startTime=$($StartTime)&endTime=$($EndTime)&api-version=5.1-preview.1"
-        }
-        else{
-            $url = "https://auditservice.dev.azure.com/$($OrganizationName)/_apis/audit/downloadlog?format=$($LogType)&api-version=5.1-preview.1"
+        switch ($PsCmdlet.ParameterSetName) {
+            'TimeRange' {
+                $url = "https://auditservice.dev.azure.com/$OrganizationName/_apis/audit/downloadlog?format=$LogType&startTime=$StartTime&endTime=$EndTime&api-version=5.1-preview.1"
+                break
+            }
+            default {
+                $url = "https://auditservice.dev.azure.com/$OrganizationName/_apis/audit/downloadlog?format=$LogType&api-version=5.1-preview.1"
+                break
+            }
         }
         
-        Invoke-RestMethod –Uri $url –Method GET –ContentType "application/json" –Headers @{Authorization=("Basic {0}" -f $base64AuthInfo)} –OutFile $OutFilePath
+        try {
+            Invoke-RestMethod -Uri $url -Method GET -ContentType "application/json" -Headers @{Authorization=("Basic {0}" -f $base64AuthInfo)} -OutFile $OutFilePath
+        }
+        catch {
+            Write-Error $_.Exception.Message
+        }
     }
 
-    End {
+    end {
         Write-Verbose "In End Block: Get-AzureDevOpsAuditLogs()"
     }
-
 }
 
 # call above function
-Get-AzureDevOpsAuditLogs –OrganizationName contosopdarveau
+Get-AzureDevOpsAuditLogs -OrganizationName contosopdarveau
