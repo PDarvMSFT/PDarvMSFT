@@ -1,0 +1,8 @@
+let hasMDE = DeviceTvmSoftwareInventory
+| where SoftwareName == "defender_for_endpoint";
+let all = DeviceInfo
+| where OSPlatform startswith "Windowsserver";
+//| distinct DeviceName ;
+all
+| join kind=leftanti (hasMDE) on DeviceName
+| summarize by DeviceName, OSPlatform
