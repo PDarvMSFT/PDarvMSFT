@@ -2,3 +2,4 @@ DeviceTvmSoftwareVulnerabilities
 | join kind=leftouter DeviceTvmSoftwareVulnerabilitiesKB on CveId
 | join kind=innerunique DeviceTvmSoftwareEvidenceBeta on SoftwareName,SoftwareVersion
 | project DeviceName, CveId, CvssScore, SoftwareName, SoftwareVersion, RegistryPaths, DiskPaths, IsExploitAvailable
+
