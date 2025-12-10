@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -s https://github.com/PDarvMSFT/PDarvMSFT/blob/e253817e4f9bf020290c16bd19f31c19c0ffb315/HAOS/build.func)
+source <(curl -s https://raw.githubusercontent.com/PDarvMSFT/PDarvMSFT/refs/heads/main/HAOS/build.func)
 # Copyright (c) 2021-2024 tteck
 # Author: tteck (tteckster)
 # License: MIT
